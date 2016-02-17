@@ -1,0 +1,16 @@
+This is the UI for the federated bird app.
+
+it's scaffolded from yeoman (http://yeoman.io/) angular template.
+
+it should install using (it needs npm, bower & grunt)
+$ npm install
+$ bower install
+
+Dev server can be launched using:
+$ grunt server
+
+Also
+$ grunt build
+generate an app that can be hosted on any http server
+
+Currently it requires the federated bird API to answer on "localhost:5000" (This can be configured at the end of index.html)

@@ -1,0 +1,14 @@
+Federated birds server
+======================
+
+Install with:
+$ virtualenv test_env
+$ . test_env/bin/activate
+$ pip install -r requirements.txt
+
+
+Launch with (with virtualenv activated): 
+
+$ python server.py 
+
+Database configuration is at the start of server.py

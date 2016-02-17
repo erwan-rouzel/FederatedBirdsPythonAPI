@@ -1,0 +1,20 @@
+<div class="row" ng-show="error">
+  <div class="alert alert-danger" role="alert">{{error}}</div>
+</div>
+<nav ng-show="pagination">
+  <ul class="pagination">
+    <li ng-class="{disabled: !pagination.prev}"><a ng-click="pagination.prev && get(pagination.prev)"><span aria-hidden="true">&laquo;</span><span class="sr-only">Previous</span></a></li>
+    <li ng-class="{disabled: !pagination.next}"><a ng-click="pagination.next && get(pagination.next)"><span aria-hidden="true">&raquo;</span><span class="sr-only">Next</span></a></li>
+  </ul>
+</nav>
+<div class="row" ng-repeat="tweet in tweets">
+  <div class="col-xs-2">
+    <a ng-href="#/{{tweet.by}}">
+      <img ng-src="http://robohash.org/{{tweet.by}}?size=75x75"/>
+    </a>
+  </div>
+  <p class="col-xs-10">
+  {{tweet.content}}
+  <br />at {{tweet.at | date : 'medium'}}
+  </p>
+</div>

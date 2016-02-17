@@ -1,0 +1,45 @@
+<h1>Your private page</h1>
+<div class="row">
+  <div class="col-xs-6">
+    <h2>Your last tweets</h2>
+    <div class="row" ng-repeat="tweet in myTweets">
+      <div class="col-xs-2">
+        <img ng-src="http://robohash.org/{{tweet.by}}?size=50x50"/>
+      </div>
+      <p class="col-xs-10">
+      {{tweet.content}}
+      <br />at {{tweet.at | date : 'medium'}}
+      </p>
+    </div>
+    <form ng-submit="postTweet()">
+      <textarea class="form-control" rows="3" ng-model="tweet" placeholder="what's on your mind..."></textarea>
+      <button type="submit" class="btn btn-default">Submit</button>
+    </form>
+    <div class="row" ng-show="remoteFollowings.length > 0">
+      <h2>Remote people you are following</h2>
+      <ul>
+        <li ng-repeat="user in remoteFollowings"><a ng-href="#/{{user}}">{{user}}</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="col-xs-6">
+    <h2>Tweets from local people you are following</h2>
+    <nav ng-show="pagination">
+      <ul class="pagination">
+        <li ng-class="{disabled: !pagination.prev}"><a ng-click="pagination.prev && get(pagination.prev)"><span aria-hidden="true">&laquo;</span><span class="sr-only">Previous</span></a></li>
+        <li ng-class="{disabled: !pagination.next}"><a ng-click="pagination.next && get(pagination.next)"><span aria-hidden="true">&raquo;</span><span class="sr-only">Next</span></a></li>
+      </ul>
+    </nav>
+    <div class="row" ng-repeat="tweet in tweets">
+      <div class="col-xs-2">
+        <a ng-href="#/{{tweet.by}}">
+          <img ng-src="http://robohash.org/{{tweet.by}}?size=50x50"/>
+        </a>
+      </div>
+      <p class="col-xs-10">
+      {{tweet.content}}
+      <br />at {{tweet.at | date : 'medium'}}
+      </p>
+    </div>
+  </div>
+</div>
