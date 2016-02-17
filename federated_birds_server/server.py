@@ -1,7 +1,6 @@
 from flask import Flask, session, _app_ctx_stack, request, redirect, url_for, abort, jsonify
 from datastore import DataStore
 from werkzeug import datastructures
-import json
 import urllib
 
 # DATASTORE = "MySQL"
@@ -15,11 +14,13 @@ SERVER_NAME = "pybirds"
 app = Flask(__name__)
 app.secret_key = SESSION_KEY
 
+
 def get_datastore():
     top = _app_ctx_stack.top
     if not hasattr(top, 'datastore'):
         top.datastore = DataStore(DATASTORE, DATASTORE_CONFIG, app.logger)
     return top.datastore
+
 
 def format_response(coll, has_more=False):
     resp = jsonify(coll)
@@ -41,12 +42,12 @@ def format_response(coll, has_more=False):
         return resp, 200, {'Link': ", ".join(links)}
 
 
-
 @app.teardown_appcontext
 def close_datastore(exception):
     top = _app_ctx_stack.top
     if hasattr(top, 'datastore'):
         top.datastore.close()
+
 
 def authorized(handle, token):
     if not get_datastore().authenticate_token(handle, token):
@@ -56,10 +57,12 @@ def authorized(handle, token):
 def page():
     return int(request_form().get('page', 1))
 
+
 @app.route("/users.json")
 def users():
     coll = get_datastore().user_logins(page())
     return format_response({"server": SERVER_NAME, "users": coll}, coll.has_more)
+
 
 @app.route("/users.json", methods=["POST"])
 def create_user():
@@ -71,6 +74,7 @@ def create_user():
         return '', 409
     else:
         return format_response(get_datastore().create_user(handle, password))
+
 
 @app.route("/sessions.json", methods=["POST"])
 def signin():
@@ -84,27 +88,33 @@ def signin():
     else:
         return format_response(tentative_user)
 
+
 @app.route("/tweets.json")
 def tweets():
     return format_response({"tweets": get_datastore().tweets(None, page())})
+
 
 @app.route("/<handle>/tweets.json")
 def personal_tweets(handle):
     return format_response({"tweets": get_datastore().tweets(handle, page())})
 
+
 @app.route("/<handle>/followers.json")
 def followers(handle):
     return format_response({"followers": get_datastore().followers(handle, page())})
 
+
 @app.route("/<handle>/followings.json")
 def followings(handle):
     return format_response({"followings": get_datastore().followings(handle, page())})
+
 
 @app.route("/<myhandle>/followings.json", methods= ['DELETE'])
 def delete_following(myhandle):
     authorized(myhandle, request_form()["token"])
     following = get_datastore().delete_following(request_form()["handle"], myhandle)
     return '', (200 if following else 422)
+
 
 @app.route("/<myhandle>/followings.json", methods= ['POST'])
 def create_following(myhandle):
@@ -114,19 +124,23 @@ def create_following(myhandle):
         return '', 422
     return format_response(following)
 
+
 @app.route("/<handle>/tweets.json", methods= ['POST'])
 def create_tweet(handle):
     authorized(handle, request_form()['token'])
     return format_response(get_datastore().create_tweet(request_form()['content'], handle))
+
 
 @app.route("/<handle>/reading_list.json")
 def reading_list(handle):
     authorized(handle, request_form()['token'])
     return format_response({"tweets": get_datastore().reading_list(handle, page())})
 
+
 @app.route("/")
 def index():
     return redirect(url_for('tweets'))
+
 
 def request_form():
     ret = request.form
